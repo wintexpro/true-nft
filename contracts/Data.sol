@@ -6,6 +6,7 @@ pragma AbiHeader time;
 import './resolvers/IndexResolver.sol';
 
 import './interfaces/IData.sol';
+import './interfaces/IReceiveNftCallback.sol';
 
 import './libraries/Constants.sol';
 
@@ -44,6 +45,21 @@ contract Data is IData, IndexResolver {
         _addrOwner = addrTo;
 
         deployIndex(addrTo);
+    }
+
+    function transferOwnershipAndNotify(address addrTo, TvmCell payload) public {
+        require(msg.sender == _addrOwner);
+        tvm.rawReserve(Constants.MIN_FOR_DEPLOY, 0);
+
+        address oldIndexOwner = resolveIndex(_addrRoot, address(this), _addrOwner);
+        IIndex(oldIndexOwner).destruct();
+        address oldIndexOwnerRoot = resolveIndex(address(0), address(this), _addrOwner);
+        IIndex(oldIndexOwnerRoot).destruct();
+
+        _addrOwner = addrTo;
+
+        deployIndex(addrTo);
+        IReceiveNftCallback(addrTo).onReceiveNft{ value: 0, flag: 128}(payload);
     }
 
     function deployIndex(address owner) private {
