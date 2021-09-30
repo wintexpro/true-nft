@@ -25,11 +25,11 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
         owner = internalOwner;
     }
 
-    function mintNft() public onlyOwner {
+    function mintNft() public onlyOwner returns (uint256 id) {
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted);
         new Data{stateInit: stateData, value: 1.1 ton}(msg.sender, _codeIndex);
-
+        id = _totalMinted;
         _totalMinted++;
     }
 
