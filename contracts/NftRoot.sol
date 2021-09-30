@@ -11,15 +11,18 @@ import './IndexBasis.sol';
 import './interfaces/IData.sol';
 import './interfaces/IIndexBasis.sol';
 
-contract NftRoot is DataResolver, IndexResolver {
+import './access/InternalOwner.sol';
+
+contract NftRoot is DataResolver, IndexResolver, InternalOwner {
 
     uint256 _totalMinted;
     address _addrBasis;
 
-    constructor(TvmCell codeIndex, TvmCell codeData) public {
+    constructor(TvmCell codeIndex, TvmCell codeData, address internalOwner) public {
         tvm.accept();
         _codeIndex = codeIndex;
         _codeData = codeData;
+        owner = internalOwner;
     }
 
     function mintNft() public {
