@@ -15,16 +15,18 @@ contract Data is IData, IndexResolver {
     address _addrRoot;
     address _addrOwner;
     address _addrAuthor;
+    bytes _dataUrl;
 
     uint256 static _id;
 
-    constructor(address addrOwner, TvmCell codeIndex) public {
+    constructor(address addrOwner, bytes dataUrl, TvmCell codeIndex) public {
         optional(TvmCell) optSalt = tvm.codeSalt(tvm.code());
         require(optSalt.hasValue(), 101);
         (address addrRoot) = optSalt.get().toSlice().decode(address);
         require(msg.sender == addrRoot);
         require(msg.value >= Constants.MIN_FOR_DEPLOY);
         tvm.accept();
+        _dataUrl = dataUrl;
         _addrRoot = addrRoot;
         _addrOwner = addrOwner;
         _addrAuthor = addrOwner;
@@ -59,6 +61,7 @@ contract Data is IData, IndexResolver {
         _addrOwner = addrTo;
 
         deployIndex(addrTo);
+        // TODO calc value for this call
         IReceiveNftCallback(addrTo).onReceiveNft{ value: 0, flag: 128}(address(this), msg.sender, payload);
     }
 
@@ -75,11 +78,13 @@ contract Data is IData, IndexResolver {
     function getInfo() public view override returns (
         address addrRoot,
         address addrOwner,
-        address addrData
+        address addrData,
+        bytes dataUrl
     ) {
         addrRoot = _addrRoot;
         addrOwner = _addrOwner;
         addrData = address(this);
+        dataUrl = _dataUrl;
     }
 
     function getOwner() public view override returns(address addrOwner) {
