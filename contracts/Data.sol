@@ -59,7 +59,7 @@ contract Data is IData, IndexResolver {
         _addrOwner = addrTo;
 
         deployIndex(addrTo);
-        IReceiveNftCallback(addrTo).onReceiveNft{ value: 0, flag: 128}(msg.sender, payload);
+        IReceiveNftCallback(addrTo).onReceiveNft{ value: 0, flag: 128}(address(this), msg.sender, payload);
     }
 
     function deployIndex(address owner) private {
