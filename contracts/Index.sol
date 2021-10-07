@@ -3,6 +3,8 @@ pragma ton-solidity >=0.43.0;
 pragma AbiHeader expire;
 pragma AbiHeader time;
 
+import './errors/IndexErrors.sol';
+
 import './interfaces/IIndex.sol';
 
 contract Index is IIndex {
@@ -12,7 +14,7 @@ contract Index is IIndex {
 
     constructor(address root) public {
         optional(TvmCell) optSalt = tvm.codeSalt(tvm.code());
-        require(optSalt.hasValue(), 101);
+        require(optSalt.hasValue(), IndexErrors.NO_CODE_SALT);
         (address addrRoot, address addrOwner) = optSalt
             .get()
             .toSlice()
@@ -37,7 +39,7 @@ contract Index is IIndex {
     }
 
     function destruct() public override {
-        require(msg.sender == _addrData);
+        require(msg.sender == _addrData, IndexErrors.SENDER_IS_NOT_DATA);
         selfdestruct(_addrData);
     }
 }
