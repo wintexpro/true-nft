@@ -41,13 +41,20 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
 
     function mintNft(
         bytes dataUrl,
+        bool notify,
         address sendGasTo
     ) public onlyOwner {
         require(msg.value >= Constants.MINT_NFT_VALUE, NftRootErrors.NOT_ENOUGH_VALUE);
         tvm.rawReserve(Constants.ROOT_INITIAL_VALUE, 0);
         TvmCell codeData = _buildDataCode(address(this));
         TvmCell stateData = _buildDataState(codeData, _totalMinted);
-        address newDataAddress = new Data{stateInit: stateData, value: Constants.DATA_DEPLOY_GAS}(msg.sender, dataUrl, _codeIndex);
+        address newDataAddress = new Data{stateInit: stateData, value: Constants.DATA_DEPLOY_GAS}(
+            msg.sender,
+            dataUrl,
+            _codeIndex,
+            notify,
+            sendGasTo
+        );
         emit DataMinted(newDataAddress, _totalMinted);
         _totalMinted++;
         _totalSupply++;

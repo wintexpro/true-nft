@@ -5,7 +5,7 @@ library Constants {
     uint128 constant DATA_DEPLOY_GAS          = 2.2 ton;
     uint128 constant DATA_DEPLOY_VALUE        = 2.1 ton;
     uint128 constant DATA_INITIAL_VALUE       = 1 ton;
-    uint128 constant INDEX_DEPLOY_VALUE       = 1 ton;
+    uint128 constant INDEX_DEPLOY_VALUE       = 0.4 ton;
     uint128 constant TRANSFER_OWNERSHIP_VALUE = 1.1 ton;
 
     //root
