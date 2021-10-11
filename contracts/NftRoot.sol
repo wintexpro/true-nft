@@ -96,7 +96,7 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
         require(msg.sender == resolveData(address(this), id), NftRootErrors.WRONG_DATA_SENDER);
         _totalSupply--;
         emit DataBurned(msg.sender, id);
-        sendGasTo.transfer({ value: 0, flag: 128, bounce: false});
+        sendGasTo.transfer({ value: 0, flag: 64, bounce: false});
     }
 
     function getVersion() public view responsible returns (uint version) {
