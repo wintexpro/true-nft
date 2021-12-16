@@ -22,6 +22,8 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
     uint256 _totalMinted;
     address _addrBasis;
 
+    string _nftDataDetailsAbi;
+
     event DataMinted(address dataAddress, uint256 id);
     event DataBurned(address dataAddress, uint256 id);
 
@@ -29,6 +31,7 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
         TvmCell codeIndex,
         TvmCell codeData,
         address internalOwner,
+        string nftDataDetailsAbi,
         address sendGasTo
     ) public {
         tvm.accept();
@@ -36,6 +39,7 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
         _codeIndex = codeIndex;
         _codeData = codeData;
         owner = internalOwner;
+        _nftDataDetailsAbi = nftDataDetailsAbi;
         sendGasTo.transfer({ value: 0, flag: 128, bounce: false });
     }
 
@@ -53,6 +57,7 @@ contract NftRoot is DataResolver, IndexResolver, InternalOwner {
             dataUrl,
             _codeIndex,
             notify,
+            _nftDataDetailsAbi,
             sendGasTo
         );
         emit DataMinted(newDataAddress, _totalMinted);

@@ -22,11 +22,14 @@ contract Data is IData, IndexResolver {
     bytes _dataUrl;
     uint256 static _id;
 
+    string _nftDataDetailsAbi;
+
     constructor(
         address addrOwner,
         bytes dataUrl,
         TvmCell codeIndex,
         bool notify,
+        string nftDataDetailsAbi,
         address sendGasTo
     ) public {
         optional(TvmCell) optSalt = tvm.codeSalt(tvm.code());
@@ -41,6 +44,7 @@ contract Data is IData, IndexResolver {
         _addrOwner = addrOwner;
         _addrAuthor = addrOwner;
         _codeIndex = codeIndex;
+        _nftDataDetailsAbi = nftDataDetailsAbi;
 
         deployIndex(addrOwner);
         emit Minted(address(this), _id);
@@ -153,5 +157,9 @@ contract Data is IData, IndexResolver {
 
     function getVersion() public view responsible returns (uint version) {
         return 1;
+    }
+    
+    function getNftDetailsABI() public view responsible returns (string) {
+        return { value: 0, bounce: false, flag: 64 }_nftDataDetailsAbi;
     }
 }
